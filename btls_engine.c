@@ -48,7 +48,7 @@ int meth_nids[] = {NID_undef, NID_undef};
 
 #define REGISTER_NID(var, alg) tmpnid = OBJ_ln2nid(LN_##alg);\
 	var = (tmpnid == NID_undef)?\
-		OBJ_create(OID_##alg, _strdup(SN_##alg) , _strdup(LN_##alg)) : tmpnid;\
+		OBJ_create(OID_##alg, BUF_strdup(SN_##alg) , BUF_strdup(LN_##alg)) : tmpnid;\
 	if (var == NID_undef) { goto err;}
 
 static int register_NIDs() 
