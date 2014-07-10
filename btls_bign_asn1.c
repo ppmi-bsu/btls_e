@@ -1,10 +1,10 @@
 /*
 *******************************************************************************
 \file btls_bign_asn1.c
-\brief Структуры АСН.1, описывающие параметры и ключи bign
+\brief пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ.1, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ bign
 *******************************************************************************
-\author (С) Сергей Агиевич, http://apmi.bsu.by
-\comment Адаптация модуля openssl/crypto/ec/ec_asn1 [автор Nils Larsch]
+\author (пїЅ) пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ, http://apmi.bsu.by
+\comment пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ openssl/crypto/ec/ec_asn1 [пїЅпїЅпїЅпїЅпїЅ Nils Larsch]
 \created 2013.11.01
 \version 2014.04.04
 *******************************************************************************
@@ -15,12 +15,12 @@
 #include <openssl/objects.h>
 #include "bee2evp_err.h"
 #include "btls_bign.h"
-#include "../bee2/mem.h"
+#include "../bee2/core/mem.h"
 
 /*
 *******************************************************************************
-Реализована поддержка следующих структур ASN.1, описанных 
-в СТБ 34.101.45 [приложение Д]:
+пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ ASN.1, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ 
+пїЅ пїЅпїЅпїЅ 34.101.45 [пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ]:
 
   AlgorithmIdentifier ::= SEQUENCE {
     algorithm   OBJECT IDENTIFIER,
@@ -60,8 +60,8 @@
     subjectPublicKey  PublicKey
   }
 
-Дополнительно поддерживается описание личного ключа, заданное в СТБ П 34.101.45
-и соответствующее стандартам SEC 1:
+пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅ пїЅ 34.101.45
+пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ SEC 1:
 
   PrivateKey ::= SEQUENCE {
     privateKey  OCTET STRING (SIZE(32|48|64)),
@@ -164,10 +164,10 @@ IMPLEMENT_ASN1_FUNCTIONS_const(BIGN_PRIVATEKEY)
 
 /*
 *******************************************************************************
-Расширение модуля bee2/bign
+пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ bee2/bign
 
-\pre Параметры функции bign_cmp_params() корректны. Поэтому можно сравнивать 
-только тройки (p, a, b) [все остальные поля определяются по этой тройке].
+\pre пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ bign_cmp_params() пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ. пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ 
+пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ (p, a, b) [пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ].
 *******************************************************************************
 */
 
@@ -187,7 +187,7 @@ int bign_get_params_name(const bign_params* params)
 
 	if (!params)
 		return 0;
-	if (bignStdParams(&std, "1.2.112.0.2.0.34.101.45.3.1") != ERR_SUCCESS)
+	if (bignStdParams(&std, "1.2.112.0.2.0.34.101.45.3.1") != ERR_OK)
 		return 0;
 	if (bign_cmp_params(params, &std))
 		return id_bign_curve256v1;
@@ -216,12 +216,12 @@ int bign_params_by_name(bign_params* params, int nid)
 		oid = "1.2.112.0.2.0.34.101.45.3.3";*/
 	else
 		return 0;
-	return bignStdParams(params, oid) == ERR_SUCCESS;
+	return bignStdParams(params, oid) == ERR_OK;
 }
 
 /*
 *******************************************************************************
-Запись параметров bign_params в структуры ASN1
+пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ bign_params пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ ASN1
 *******************************************************************************
 */
 
@@ -231,24 +231,24 @@ static int bign_asn1_params2fieldid(BIGN_FIELDID* field,
 	int ok = 0;
 	BIGNUM* p = NULL;
 	octet rev[64];
-	// минимальный входной контроль
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 	if (!params || !field)
 	{
 		BEE2EVPerr(BEE2EVP_F_BIGN_ASN1_PARAMS2FIELDID, ERR_R_PASSED_NULL_PARAMETER);
 		return 0;
 	}
-	// подготовить field
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ field
 	if (field->fieldType)
 		ASN1_OBJECT_free(field->fieldType);
 	if (field->prime)
 		ASN1_INTEGER_free(field->prime);
-	// установить fieldType
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ fieldType
 	if (!(field->fieldType = OBJ_nid2obj(id_bign_primefield)))
 	{
 		BEE2EVPerr(BEE2EVP_F_BIGN_ASN1_PARAMS2FIELDID, ERR_R_OBJ_LIB);
 		goto err;
 	}
-	// установить prime
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ prime
 	memCopy(rev, params->p, params->l / 4);
 	memRev(rev, params->l / 4);
 	if (!(p = BN_new()) || !BN_bin2bn(rev, params->l / 4, p))
@@ -263,7 +263,7 @@ static int bign_asn1_params2fieldid(BIGN_FIELDID* field,
 		goto err;
 	}
 	ok = 1;
-	// выход
+	// пїЅпїЅпїЅпїЅпїЅ
 err:
 	p ? OPENSSL_free(p) : 0;
 	memSetZero(rev, sizeof(rev));
@@ -272,14 +272,14 @@ err:
 
 static int bign_asn1_params2curve(BIGN_CURVE* curve, const bign_params* params)
 {
-	// входной контроль
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 	if (!params || !curve || !curve->a || !curve->b)
 	{
 		BEE2EVPerr(BEE2EVP_F_BIGN_ASN1_PARAMS2CURVE, ERR_R_PASSED_NULL_PARAMETER);
 		return 0;
 	}
 
-	// установить a и b
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ a пїЅ b
 	if (!M_ASN1_OCTET_STRING_set(curve->a, params->a, params->l / 4) ||
 	    !M_ASN1_OCTET_STRING_set(curve->b, params->b, params->l / 4))
 	{
@@ -287,7 +287,7 @@ static int bign_asn1_params2curve(BIGN_CURVE* curve, const bign_params* params)
 		return 0;
 	}
 
-	// установить seed (optional)
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ seed (optional)
 	if (!curve->seed && !(curve->seed = ASN1_BIT_STRING_new()))
 	{
 		BEE2EVPerr(BEE2EVP_F_BIGN_ASN1_PARAMS2CURVE, ERR_R_MALLOC_FAILURE);
@@ -310,40 +310,40 @@ static BIGN_ECPARAMS* bign_asn1_params2ecp(BIGN_ECPARAMS* ecp,
 	BIGN_ECPARAMS* ret = ecp;
 	BIGNUM* order = NULL;
 	octet rev[64];
-	// входной контроль
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 	if (!params)
 	{
 		BEE2EVPerr(BEE2EVP_F_BIGN_ASN1_PARAMS2ECP, ERR_R_PASSED_NULL_PARAMETER);
 		return 0;
 	}
-	// подготовить возврат
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 	if (!ret && !(ret = BIGN_ECPARAMS_new()))
 	{
 		BEE2EVPerr(BEE2EVP_F_BIGN_ASN1_PARAMS2ECP, ERR_R_MALLOC_FAILURE);
 		goto err;
 	}
-	// установить версию (всегда 1)
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅ 1)
 	ret->version = (long)1;
-	// установить fieldID
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ fieldID
 	if (!bign_asn1_params2fieldid(ret->fieldID, params))
 	{
 		BEE2EVPerr(BEE2EVP_F_BIGN_ASN1_PARAMS2ECP, ERR_R_EC_LIB);
 		goto err;
 	}
-	// установить кривую
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
 	if (!bign_asn1_params2curve(ret->curve, params))
 	{
 		BEE2EVPerr(BEE2EVP_F_BIGN_ASN1_PARAMS2ECP, ERR_R_EC_LIB);
 		goto err;
 	}
 	
-	// установить базовую точку
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
 	if (!M_ASN1_OCTET_STRING_set(ret->base, params->yG, params->l / 4))
 	{
 		BEE2EVPerr(BEE2EVP_F_BIGN_ASN1_PARAMS2ECP, ERR_R_ASN1_LIB);
 		goto err;
 	}
-	// установить порядок
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 	memCopy(rev, params->q, params->l / 4);
 	memRev(rev, params->l / 4);
 	if (!(order = BN_new()) || !BN_bin2bn(rev, params->l / 4, order))
@@ -357,7 +357,7 @@ static BIGN_ECPARAMS* bign_asn1_params2ecp(BIGN_ECPARAMS* ecp,
 		BEE2EVPerr(BEE2EVP_F_BIGN_ASN1_PARAMS2ECP, ERR_R_ASN1_LIB);
 		goto err;
 	}
-	// установить кофактор (optional, всегда 1)
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ (optional, пїЅпїЅпїЅпїЅпїЅпїЅ 1)
 	//if (!ASN1_INTEGER_set(ret->cofactor, (long)1))
 	//{
 	//	BEE2EVPerr(BEE2EVP_F_BIGN_ASN1_PARAMS2ECP, ERR_R_ASN1_LIB);
@@ -382,13 +382,13 @@ BIGN_DOMAINPARAMS* bign_asn1_params2dp(BIGN_DOMAINPARAMS* dp,
 {
 	int ok = 1, nid;
 	BIGN_DOMAINPARAMS* ret = dp;
-	// входной контроль
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 	if (!params)
 	{
 		BEE2EVPerr(BEE2EVP_F_BIGN_ASN1_PARAMS2DP, ERR_R_PASSED_NULL_PARAMETER);
 		return NULL;
 	}
-	// подготовка возврата
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 	if (ret)
 	{
 		if (ret->type == 0 && ret->value.named)
@@ -401,14 +401,14 @@ BIGN_DOMAINPARAMS* bign_asn1_params2dp(BIGN_DOMAINPARAMS* dp,
 		BEE2EVPerr(BEE2EVP_F_BIGN_ASN1_PARAMS2DP, ERR_R_MALLOC_FAILURE);
 		return NULL;
 	}
-	// стандартные параметры?
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ?
 	if ((nid = bign_get_params_name(params)))
 	{
 		ret->type = 0;
 		if (!(ret->value.named = OBJ_nid2obj(nid)))
 			ok = 0;
 	}
-	// обшие параметры
+	// пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 	else
 	{	
 		ret->type = 1;
@@ -425,7 +425,7 @@ BIGN_DOMAINPARAMS* bign_asn1_params2dp(BIGN_DOMAINPARAMS* dp,
 
 /*
 *******************************************************************************
-Чтение параметров bign_params из структур ASN1
+пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ bign_params пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ ASN1
 *******************************************************************************
 */
 
@@ -433,14 +433,14 @@ static int bign_asn1_ecp2params(bign_params* params, const BIGN_ECPARAMS* ecp)
 {
 	int ok = 0;
 	BIGNUM* p = NULL;
-	// входной контроль
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 	if (!params || !ecp)
 	{
 		BEE2EVPerr(BEE2EVP_F_BIGN_ASN1_ECP2PARAMS, ERR_R_PASSED_NULL_PARAMETER);
 		return 0;
 	}
 	memSetZero(params, sizeof(bign_params));
-	// разобрать описание поля GF(p)
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ GF(p)
 	if (!ecp->fieldID || 
 		!ecp->fieldID->fieldType || 
 		OBJ_obj2nid(ecp->fieldID->fieldType) != id_bign_primefield ||
@@ -464,14 +464,14 @@ static int bign_asn1_ecp2params(bign_params* params, const BIGN_ECPARAMS* ecp)
 		goto err;
 	}
 	params->l /= 2;
-	// загрузить p
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ p
 	if (!BN_bn2bin(p, params->p))
 	{
 		BEE2EVPerr(BEE2EVP_F_BIGN_ASN1_PARAMETERS2GROUP, ERR_R_BN_LIB);
 		goto err;
 	}
 	memRev(params->p, params->l / 4);
-	// загрузить a и b
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ a пїЅ b
 	if (!ecp->curve || 
 		!ecp->curve->a || !ecp->curve->a->data || 
 		!ecp->curve->b || !ecp->curve->b->data ||
@@ -483,7 +483,7 @@ static int bign_asn1_ecp2params(bign_params* params, const BIGN_ECPARAMS* ecp)
 	}
 	memCopy(params->a, ecp->curve->a->data, params->l / 4);
 	memCopy(params->b, ecp->curve->b->data, params->l / 4);
-	// загрузить seed (optional)
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ seed (optional)
 	if (ecp->curve->seed)
 	{
 		if (ecp->curve->seed->length != 8)
@@ -493,14 +493,14 @@ static int bign_asn1_ecp2params(bign_params* params, const BIGN_ECPARAMS* ecp)
 		}
 		memCopy(params->seed, ecp->curve->seed->data, 8);
 	}
-	// загрузить base
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ base
 	if (!ecp->base || !ecp->base->data || ecp->base->length != params->l / 4)
 	{
 		BEE2EVPerr(BEE2EVP_F_BIGN_ASN1_ECP2PARAMS, BEE2EVP_R_ASN1_ERROR);
 		goto err;
 	}
 	memCopy(params->yG, ecp->base->data, params->l / 4);
-	// загрузить order
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ order
 	if ((p = ASN1_INTEGER_to_BN(ecp->order, p)) == NULL)
 	{
 		BEE2EVPerr(BEE2EVP_F_BIGN_ASN1_ECP2PARAMS, ERR_R_ASN1_LIB);
@@ -519,7 +519,7 @@ static int bign_asn1_ecp2params(bign_params* params, const BIGN_ECPARAMS* ecp)
 		goto err;
 	}
 	memRev(params->q, params->l / 4);
-	// загрузить cofactor (optional)
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ cofactor (optional)
 	if (ecp->cofactor)
 	{
 		if (!(p = ASN1_INTEGER_to_BN(ecp->cofactor, p)) ||
@@ -539,13 +539,13 @@ err:
 static int bign_asn1_dp2params(bign_params* params, 
 	const BIGN_DOMAINPARAMS* dp)
 {
-	// входной контроль
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 	if (!params || !dp)
 	{
 		BEE2EVPerr(BEE2EVP_F_BIGN_ASN1_DP2PARAMS, ERR_R_PASSED_NULL_PARAMETER);
 		return 0;
 	}
-	// стандартные параметры?
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ?
 	if (dp->type == 0)
 	{ 
 		if (!bign_params_by_name(params, OBJ_obj2nid(dp->value.named)))
@@ -555,7 +555,7 @@ static int bign_asn1_dp2params(bign_params* params,
 			return 0;
 		}
 	}
-	// общие параметры?
+	// пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ?
 	else if (dp->type == 1)
 	{ 
 		if (!bign_asn1_ecp2params(params, dp->value.specified))
@@ -564,12 +564,12 @@ static int bign_asn1_dp2params(bign_params* params,
 			return 0;
 		}
 	}
-	// наследованные параметры?
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ?
 	else if (dp->type == 2)
 	{ 
 		return 0;
 	}
-	// неверные параметры?
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ?
 	else
 	{
 		BEE2EVPerr(BEE2EVP_F_BIGN_ASN1_PKPARAMETERS2GROUP, 
@@ -581,21 +581,21 @@ static int bign_asn1_dp2params(bign_params* params,
 
 /*
 *******************************************************************************
-Кодирование и декодирование параметров, вложенных в bign_key
+пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ bign_key
 
-\remark Параметры задаются типом DomainParameters [BIGN_DOMAINPARAMS]
+\remark пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ DomainParameters [BIGN_DOMAINPARAMS]
 *******************************************************************************
 */
 int bign_d2i_params(bign_key* key, const unsigned char** in, long len)
 {
 	BIGN_DOMAINPARAMS* dp;
-	// входной контроль
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 	if (!key)
 	{
 		BEE2EVPerr(BEE2EVP_F_BIGN_D2I_DOMAINPARAMS, ERR_R_PASSED_NULL_PARAMETER);
 		return 0;
 	}
-	// декодировать в dp
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ dp
 	if (!(dp = d2i_BIGN_DOMAINPARAMS(NULL, in, len)))
 	{
 		BEE2EVPerr(BEE2EVP_F_BIGN_D2I_DOMAINPARAMS, 
@@ -603,7 +603,7 @@ int bign_d2i_params(bign_key* key, const unsigned char** in, long len)
 		BIGN_DOMAINPARAMS_free(dp);
 		return 0;
 	}
-	// разобрать dp
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ dp
 	if (!bign_asn1_dp2params(&key->params, dp))
 	{
 		BEE2EVPerr(BEE2EVP_F_BIGN_D2I_DOMAINPARAMS, 
@@ -619,14 +619,14 @@ int bign_i2d_params(unsigned char** out, const bign_key* key)
 {
 	int ret = 0;
 	BIGN_DOMAINPARAMS* dp;
-	// входной контроль
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 	if (!key)
 	{
 		BEE2EVPerr(BEE2EVP_F_BIGN_I2D_DOMAINPARAMS, 
 			ERR_R_PASSED_NULL_PARAMETER);
 		return 0;
 	}
-	// преобразовать в стандартную структуру
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 	if (!(dp = bign_asn1_params2dp(NULL, &key->params)))
 	{
 		BEE2EVPerr(BEE2EVP_F_BIGN_I2D_DOMAINPARAMS, 
@@ -646,14 +646,14 @@ int bign_i2d_params(unsigned char** out, const bign_key* key)
 
 /*
 *******************************************************************************
-Кодирование и декодирование открытого ключа, вложенных в структуру bign_key
+пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ bign_key
 
-\remark Открытый ключ задается типом PublicKey ::= BIT STRING
+\remark пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ PublicKey ::= BIT STRING
 *******************************************************************************
 */
 int bign_o2i_pubkey(bign_key* key, const unsigned char* in, long len)
 {
-	// входной контроль
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 	if (!key || !in)
 	{
 		BEE2EVPerr(BEE2EVP_F_BIGN_O2I_PUBKEY, ERR_R_PASSED_NULL_PARAMETER);
@@ -664,7 +664,7 @@ int bign_o2i_pubkey(bign_key* key, const unsigned char* in, long len)
 		BEE2EVPerr(BEE2EVP_F_BIGN_O2I_PUBKEY, BEE2EVP_R_INVALID_PUBKEY);
 		return 0;
 	}
-	// сохранить ключ
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
 	memCopy(key->pubKey, in, len);
 	return 1;
 }
@@ -672,23 +672,23 @@ int bign_o2i_pubkey(bign_key* key, const unsigned char* in, long len)
 int bign_i2o_pubkey(unsigned char** out, const bign_key* key)
 {
 	int ret;
-	// входной контроль
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 	if (!key)
 	{
 		BEE2EVPerr(BEE2EVP_F_BIGN_I2O_PUBKEY, ERR_R_PASSED_NULL_PARAMETER);
 		return 0;
 	}
-	// длина ключа в октетах
+	// пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 	ret = key->params.l / 2;
 	if (!out)
 		return ret;
-	// подготовить буфер
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
 	if (!*out && !(*out = OPENSSL_malloc(ret)))
 	{
 		BEE2EVPerr(BEE2EVP_F_BIGN_I2O_PUBKEY, ERR_R_MALLOC_FAILURE);
 		return 0;
 	}
-	// возвратить ключ
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
 	memCopy(*out, key->pubKey, ret);
 	return ret;
 }

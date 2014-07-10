@@ -15,7 +15,7 @@
 #include <openssl/asn1t.h>
 #include "btls_belt.h"
 #include "btls_utl.h"
-#include "../bee2/bign.h"
+#include "../bee2/crypto/bign.h"
 
 #define BIGN_PRIVKEY_SIZE  32
 #define BIGN_PUBKEY_SIZE   64
