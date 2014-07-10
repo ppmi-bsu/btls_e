@@ -48,7 +48,7 @@ int meth_nids[] = {NID_undef, NID_undef};
 
 #define REGISTER_NID(var, alg) tmpnid = OBJ_ln2nid(LN_##alg);\
 	var = (tmpnid == NID_undef)?\
-		OBJ_create(OID_##alg, _strdup(SN_##alg) , _strdup(LN_##alg)) : tmpnid;\
+		OBJ_create(OID_##alg, BUF_strdup(SN_##alg) , BUF_strdup(LN_##alg)) : tmpnid;\
 	if (var == NID_undef) { goto err;}
 
 static int register_NIDs() 
@@ -266,22 +266,22 @@ static int bind_btls(ENGINE * e, const char *id)
 
 	// Set up NIDs and context-sizes
 	belt_stream.nid = belt_stream_nid;
-	belt_stream.ctx_size = beltCTR_deep();
+	belt_stream.ctx_size = beltCTR_keep();
 
 	belt_cfb.nid = belt_cfb_nid;
-	belt_cfb.ctx_size = beltCFB_deep();
+	belt_cfb.ctx_size = beltCFB_keep();
 
 	belt_ctr.nid = belt_ctr_nid;
-	belt_ctr.ctx_size = beltCTR_deep();
+	belt_ctr.ctx_size = beltCTR_keep();
 
 	belt_dwp.nid = belt_dwp_nid;
-	belt_dwp.ctx_size = beltDWP_deep();
+	belt_dwp.ctx_size = beltDWP_keep();
 
 	belt_hash.type = belt_hash_nid;
-	belt_hash.ctx_size = beltHash_deep();
+	belt_hash.ctx_size = beltHash_keep();
 
 	belt_mac.type = belt_mac_nid;
-	belt_mac.ctx_size = beltMAC_deep();
+	belt_mac.ctx_size = beltMAC_keep();
 
 	belt_hash.pkey_type = bign_pubkey_nid;
 

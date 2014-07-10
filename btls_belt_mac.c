@@ -68,13 +68,13 @@ static int belt_mac_final(EVP_MD_CTX *ctx, unsigned char *md)
 
 static int belt_mac_copy(EVP_MD_CTX *to, const EVP_MD_CTX *from) 
 {
-	memCopy(to->md_data, from->md_data, beltMAC_deep());
+	memCopy(to->md_data, from->md_data, beltMAC_keep());
 	return 1;
 }
 
 static int belt_mac_cleanup(EVP_MD_CTX *ctx) 
 {
-	memSetZero(ctx->md_data, beltMAC_deep());
+	memSetZero(ctx->md_data, beltMAC_keep());
 	return 1;
 }
 

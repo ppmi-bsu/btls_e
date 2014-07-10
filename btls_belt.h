@@ -17,10 +17,10 @@
 #include <openssl/evp.h>
 #include <openssl/ossl_typ.h>
 
-#include "../bee2/belt.h"
-#include "../bee2/brng.h"
+#include "../bee2/crypto/belt.h"
+#include "../bee2/crypto/brng.h"
 #include "../bee2/defs.h"
-#include "../bee2/err.h"
+#include "../bee2/core/err.h"
 
 #include "btls_mem.h"
 

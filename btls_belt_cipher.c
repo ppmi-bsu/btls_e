@@ -141,7 +141,7 @@ static int belt_ctr_cipher(EVP_CIPHER_CTX *ctx, unsigned char *out, const unsign
 
 static int belt_ctr_cleanup(EVP_CIPHER_CTX *ctx) 
 {
-	memSetZero(ctx->cipher_data, beltCTR_deep());
+	memSetZero(ctx->cipher_data, beltCTR_keep());
 	ctx->app_data = NULL;
 	return 1;
 }
@@ -209,7 +209,7 @@ static int belt_cfb_cipher(EVP_CIPHER_CTX *ctx, unsigned char *out, const unsign
 
 static int belt_cfb_cleanup(EVP_CIPHER_CTX *ctx) 
 {
-	memSetZero(ctx->cipher_data, beltCFB_deep());
+	memSetZero(ctx->cipher_data, beltCFB_keep());
 	ctx->app_data = NULL;
 	return 1;
 }
@@ -276,7 +276,7 @@ static int belt_dwp_cipher(EVP_CIPHER_CTX *ctx, unsigned char *out, const unsign
 
 static int belt_dwp_cleanup(EVP_CIPHER_CTX *ctx) 
 {
-	memSetZero(ctx->cipher_data, beltDWP_deep());
+	memSetZero(ctx->cipher_data, beltDWP_keep());
 	ctx->app_data = NULL;
 	return 1;
 }

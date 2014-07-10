@@ -27,7 +27,7 @@ static octet* computePublicKey(const bign_params *params, const octet *privKey)
 
 	newPubKey = (octet*) OPENSSL_malloc(params->l / 2);
 	if (newPubKey == NULL) return NULL;
-	if (bignCalcPubkey(newPubKey, params, privKey) != ERR_SUCCESS)
+	if (bignCalcPubkey(newPubKey, params, privKey) != ERR_OK)
 	{
 		OPENSSL_free(newPubKey);
 		return NULL;
