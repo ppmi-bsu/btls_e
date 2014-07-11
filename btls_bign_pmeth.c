@@ -14,13 +14,13 @@
 #include "btls_oids.h"
 #include "btls_utl.h"
 
-static int init_rng_stack(void *rng_stack) 
+static int init_rng_stack(void *rng_stack)
 {
 	unsigned char *buf = NULL;
-		
+
 	buf = (unsigned char *) OPENSSL_malloc(64);
 	if (!buf) return 0;
-	
+
 	if (RAND_bytes(buf, 64) <= 0) return 0;
 
 	brngCTRStart(buf, buf+32, rng_stack);
@@ -32,28 +32,28 @@ static int init_rng_stack(void *rng_stack)
 }
 
 /* Allocates new bign_pmeth_data structure and assigns it as data */
-static int pkey_bign_init(EVP_PKEY_CTX *ctx) 
+static int pkey_bign_init(EVP_PKEY_CTX *ctx)
 {
 	struct bign_pmeth_data *data = NULL;
 	struct bign_key_data *bign_key;
 	int base_id;
 	EVP_PKEY *pkey;
-	
+
 	data = (struct bign_pmeth_data *) OPENSSL_malloc(sizeof(struct bign_pmeth_data));
 	if (!data) return 0;
 	memSetZero(data, sizeof(struct bign_pmeth_data));
 
 	pkey = EVP_PKEY_CTX_get0_pkey(ctx);
 
-	if (pkey && EVP_PKEY_get0(pkey)) 
+	if (pkey && EVP_PKEY_get0(pkey))
 	{
 		base_id = EVP_PKEY_base_id(pkey);
-		if (base_id == bign_pubkey_nid) 
+		if (base_id == bign_pubkey_nid)
 		{
 			bign_key = (struct bign_key_data*) EVP_PKEY_get0(pkey);
 			data->param_nid = bign_key->param_nid;
-		} 
-		else 
+		}
+		else
 		{
 			return 0;
 		}
@@ -69,12 +69,12 @@ static int pkey_bign_init(EVP_PKEY_CTX *ctx)
 }
 
 /* Copies contents of bign_pmeth_data structure */
-static int pkey_bign_copy(EVP_PKEY_CTX *dst, EVP_PKEY_CTX *src) 
+static int pkey_bign_copy(EVP_PKEY_CTX *dst, EVP_PKEY_CTX *src)
 {
 	struct bign_pmeth_data *dst_data, *src_data;
 	unsigned char *pstack;
 
-	if (!pkey_bign_init(dst)) 
+	if (!pkey_bign_init(dst))
 	{
 		return 0;
 	}
@@ -88,18 +88,18 @@ static int pkey_bign_copy(EVP_PKEY_CTX *dst, EVP_PKEY_CTX *src)
 
 	if (src_data->rng_stack)
 		dst_data->rng_stack = pstack;
-	
+
 	return 1;
 }
 
 /* Frees up bign_pmeth_data structure */
-static void pkey_bign_cleanup(EVP_PKEY_CTX *ctx) 
+static void pkey_bign_cleanup(EVP_PKEY_CTX *ctx)
 {
 	struct bign_pmeth_data *data;
 
 	data = (struct bign_pmeth_data *) EVP_PKEY_CTX_get_data(ctx);
 	if (!data) return;
-	
+
 	if (data->rng_stack)
 	{
 		OPENSSL_cleanse(data->rng_stack, brngCTR_keep());
@@ -113,16 +113,16 @@ static void pkey_bign_cleanup(EVP_PKEY_CTX *ctx)
 }
 
 /* --------------------- control functions  ------------------------------*/
-static int pkey_bign_ctrl(EVP_PKEY_CTX *ctx, int type, int p1, void *p2) 
+static int pkey_bign_ctrl(EVP_PKEY_CTX *ctx, int type, int p1, void *p2)
 {
 	struct bign_pmeth_data *pctx;
 
 	pctx = (struct bign_pmeth_data*) EVP_PKEY_CTX_get_data(ctx);
 
-	switch (type) 
+	switch (type)
 	{
 	case EVP_PKEY_CTRL_MD:
-		if (EVP_MD_type((const EVP_MD *) p2) != belt_hash.type) 
+		if (EVP_MD_type((const EVP_MD *) p2) != belt_hash.type)
 		{
 			return 0;
 		}
@@ -158,19 +158,19 @@ static int pkey_bign_ctrl(EVP_PKEY_CTX *ctx, int type, int p1, void *p2)
 	return -2;
 }
 
-static int pkey_bign_ctrl_str(EVP_PKEY_CTX *ctx, const char *type, const char *value) 
+static int pkey_bign_ctrl_str(EVP_PKEY_CTX *ctx, const char *type, const char *value)
 {
 	int param_nid = 0;
 
-	if (!strcmp(type, param_ctrl_string)) 
+	if (!strcmp(type, param_ctrl_string))
 	{
-		if (!value) 
+		if (!value)
 		{
 			return 0;
 		}
-		if (strlen(value) == 1) 
+		if (strlen(value) == 1)
 		{
-			switch (toupper((unsigned char) value[0])) 
+			switch (toupper((unsigned char) value[0]))
 			{
 			case 'A':
 				param_nid = bign_prm1_nid;
@@ -186,44 +186,44 @@ static int pkey_bign_ctrl_str(EVP_PKEY_CTX *ctx, const char *type, const char *v
 
 /* --------------------- key generation  --------------------------------*/
 
-static int pkey_bign_paramgen_init(EVP_PKEY_CTX *ctx) 
+static int pkey_bign_paramgen_init(EVP_PKEY_CTX *ctx)
 {
 	return 1;
 }
 
-int fill_bign_params(struct bign_key_data *key_data, int params_nid) 
+int fill_bign_params(struct bign_key_data *key_data, int params_nid)
 {
 	char * param_oid;
 	int status;
 
 	param_oid = NULL;
 	key_data->param_nid = params_nid;
-	if (key_data->param_nid == bign_prm1_nid) 
+	if (key_data->param_nid == bign_prm1_nid)
 		param_oid = OID_bign_prm1;
 
 	status = bignStdParams(&key_data->params, param_oid);
 	if (status != ERR_OK)  return 0;
-	
+
 	return 1;
 }
 
-static int pkey_bign_set_params(EVP_PKEY_CTX *ctx, EVP_PKEY *pkey) 
+static int pkey_bign_set_params(EVP_PKEY_CTX *ctx, EVP_PKEY *pkey)
 {
 	struct bign_pmeth_data *data = NULL;
 	struct bign_key_data *key_data = NULL;
-	
+
 	data = (struct bign_pmeth_data *) EVP_PKEY_CTX_get_data(ctx);
 	if (!data) return 0;
 
 	key_data = (struct bign_key_data *) OPENSSL_malloc(sizeof(struct bign_key_data));
 	if (!key_data) return 0;
 	memSetZero(key_data, sizeof(struct bign_key_data));
-	
-	if (data->param_nid == NID_undef) 
+
+	if (data->param_nid == NID_undef)
 	{
 		data->param_nid = bign_prm1_nid;
 	}
-	if (!fill_bign_params(key_data, data->param_nid)) 
+	if (!fill_bign_params(key_data, data->param_nid))
 	{
 		OPENSSL_free(key_data);
 		EVP_PKEY_CTX_set_data(ctx, NULL);
@@ -237,13 +237,13 @@ static int pkey_bign_set_params(EVP_PKEY_CTX *ctx, EVP_PKEY *pkey)
 }
 
 /* Generates BIGN key and assigns it using specified type */
-static int pkey_bign_keygen(EVP_PKEY_CTX *ctx, EVP_PKEY *pkey) 
+static int pkey_bign_keygen(EVP_PKEY_CTX *ctx, EVP_PKEY *pkey)
 {
 	struct bign_pmeth_data *data;
 	struct bign_key_data *key_data;
 	int status;
 
-	if (!pkey_bign_set_params(ctx, pkey)) 
+	if (!pkey_bign_set_params(ctx, pkey))
 	{
 		return 0;
 	}
@@ -266,37 +266,38 @@ static int pkey_bign_keygen(EVP_PKEY_CTX *ctx, EVP_PKEY *pkey)
 
 /* ----------- sign/verify callbacks --------------------------------------*/
 static octet _belt_hash_der[] = {0x06, 0x09, 0x2A, 0x70, 0x00, 0x02, 0x00, 0x22, 0x65, 0x1F, 0x51};
+static size_t _belt_oid_len = sizeof(_belt_hash_der);
 
 static int pkey_bign_sign(EVP_PKEY_CTX *ctx, unsigned char *sig,
-		size_t *siglen, const unsigned char *tbs, size_t tbs_len) 
+		size_t *siglen, const unsigned char *tbs, size_t tbs_len)
 {
 	struct bign_pmeth_data *data;
 	struct bign_key_data *key_data;
 	int status;
-	
+
 	key_data = (struct bign_key_data *) EVP_PKEY_get0(EVP_PKEY_CTX_get0_pkey(ctx));
-	if (tbs_len != (key_data->params.l / 4)) 
+	if (tbs_len != (key_data->params.l / 4))
 	{
 		return 0;
 	}
-	if (!siglen) 
+	if (!siglen)
 	{
 		return 0;
 	}
 	*siglen = key_data->params.l * 3 / 8;;
-	if (!sig) 
+	if (!sig)
 	{
 		return 1;
 	}
 
 	data = (struct bign_pmeth_data *) EVP_PKEY_CTX_get_data(ctx);
 
-	status = bignSign(sig, &key_data->params, _belt_hash_der, tbs, key_data->privKey, brngCTRStepR, data->rng_stack);
+	status = bignSign(sig, &key_data->params, _belt_hash_der, _belt_oid_len, tbs, key_data->privKey, brngCTRStepR, data->rng_stack);
 	return (status == ERR_OK) ? 1 : 0;
 }
 
 static int pkey_bign_verify(EVP_PKEY_CTX *ctx, const unsigned char *sig,
-		size_t siglen, const unsigned char *tbs, size_t tbs_len) 
+		size_t siglen, const unsigned char *tbs, size_t tbs_len)
 {
 	int ok;
 	struct bign_key_data *key_data;
@@ -304,23 +305,23 @@ static int pkey_bign_verify(EVP_PKEY_CTX *ctx, const unsigned char *sig,
 	EVP_PKEY* pkey;
 	ok = 0;
 	pkey = EVP_PKEY_CTX_get0_pkey(ctx);
-	if (pkey) 
+	if (pkey)
 	{
 		key_data = (struct bign_key_data *) EVP_PKEY_get0(pkey);
-		ret = bignVerify(&key_data->params, _belt_hash_der, tbs, sig, key_data->pubKey);
+		ret = bignVerify(&key_data->params, _belt_hash_der, _belt_oid_len, tbs, sig, key_data->pubKey);
 		ok = (ret == ERR_OK) ? 1 : 0;
 	}
 	return ok;
 }
 
 /* ------------- encrypt init -------------------------------------*/
-static int pkey_bign_encrypt_init(EVP_PKEY_CTX *ctx) 
+static int pkey_bign_encrypt_init(EVP_PKEY_CTX *ctx)
 {
 	return 1;
 }
 
-static int pkey_bign_encrypt(EVP_PKEY_CTX *pctx, unsigned char *out, size_t *out_len, 
-	const unsigned char *key, size_t key_len) 
+static int pkey_bign_encrypt(EVP_PKEY_CTX *pctx, unsigned char *out, size_t *out_len,
+	const unsigned char *key, size_t key_len)
 {
 	struct bign_pmeth_data *data;
 	EVP_PKEY *pubk;
@@ -330,7 +331,7 @@ static int pkey_bign_encrypt(EVP_PKEY_CTX *pctx, unsigned char *out, size_t *out
 	if (key_len < 16) return 0;
 	if (!out_len) return 0;
 
-	pubk = EVP_PKEY_CTX_get0_pkey(pctx);	
+	pubk = EVP_PKEY_CTX_get0_pkey(pctx);
 	if (!pubk) return 0;
 
 	key_data = (struct bign_key_data *) EVP_PKEY_get0(pubk);
@@ -348,14 +349,14 @@ static int pkey_bign_encrypt(EVP_PKEY_CTX *pctx, unsigned char *out, size_t *out
 }
 
 static int pkey_bign_decrypt(EVP_PKEY_CTX *pctx, unsigned char *key,
-		size_t * key_len, const unsigned char *in, size_t in_len) 
+		size_t * key_len, const unsigned char *in, size_t in_len)
 {
 	EVP_PKEY *priv;
 	struct bign_key_data *key_data;
 	int status;
 
 	if (!key_len) return 0;
-	
+
 	priv = EVP_PKEY_CTX_get0_pkey(pctx);
 	if (!priv) return 0;
 
@@ -371,16 +372,16 @@ static int pkey_bign_decrypt(EVP_PKEY_CTX *pctx, unsigned char *key,
 	return (status == ERR_OK) ? 1 : 0;
 }
 
-int register_pmeth_bign(int id, EVP_PKEY_METHOD **pmeth, int flags) 
+int register_pmeth_bign(int id, EVP_PKEY_METHOD **pmeth, int flags)
 {
 	*pmeth = EVP_PKEY_meth_new(id, flags);
-	
-	if (!*pmeth) 
+
+	if (!*pmeth)
 	{
 		return 0;
 	}
 
-	if (id == bign_pubkey_nid) 
+	if (id == bign_pubkey_nid)
 	{
 		EVP_PKEY_meth_set_ctrl(*pmeth, pkey_bign_ctrl, pkey_bign_ctrl_str);
 		EVP_PKEY_meth_set_sign(*pmeth, NULL, pkey_bign_sign);
@@ -392,8 +393,8 @@ int register_pmeth_bign(int id, EVP_PKEY_METHOD **pmeth, int flags)
 		EVP_PKEY_meth_set_decrypt(*pmeth, NULL, pkey_bign_decrypt);
 
 		EVP_PKEY_meth_set_paramgen(*pmeth, pkey_bign_paramgen_init, pkey_bign_set_params);
-	} 
-	else 
+	}
+	else
 	{
 		return 0;
 	}
