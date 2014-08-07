@@ -15,7 +15,7 @@
 #include <openssl/asn1t.h>
 #include "btls_belt.h"
 #include "btls_utl.h"
-#include "../bee2/crypto/bign.h"
+#include "crypto/bign.h"
 
 #define BIGN_PRIVKEY_SIZE  32
 #define BIGN_PUBKEY_SIZE   64
@@ -24,16 +24,16 @@
 #define EVP_PKEY_CTRL_BIGN_PARAMSET (EVP_PKEY_ALG_CTRL+1)
 #define param_ctrl_string "paramset"
 
-struct bign_pmeth_data 
+struct bign_pmeth_data
 {
 	int param_nid; /* Should be set whenever parameters are filled */
 	EVP_MD *md;
-	int peer_key_used; 
+	int peer_key_used;
 	int key_set;
 	unsigned char *rng_stack;
 };
 
-struct bign_key_data 
+struct bign_key_data
 {
 	bign_params params;
 	int param_nid;

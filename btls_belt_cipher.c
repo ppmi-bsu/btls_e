@@ -11,7 +11,7 @@
 
 #include "btls_belt.h"
 #include "btls_err.h"
-#include <rand/rand.h>
+//#include <rand/rand.h>
 
 /* режим счетчика */
 static int belt_ctr_init(EVP_CIPHER_CTX *ctx, const unsigned char *key, const unsigned char *iv, int enc);
@@ -20,23 +20,23 @@ static int belt_ctr_cleanup(EVP_CIPHER_CTX *ctx);
 /* общая для режимов ctr, ofb функция*/
 static int belt_cipher_control(EVP_CIPHER_CTX *c, int type, int arg, void *ptr);
 
-/*  
+/*
  *  Определение структуры для поточного алгоритма.
- *  В качестве поточного алгоритма будем использовать алгоритм шифрования в режиме счетчика 
+ *  В качестве поточного алгоритма будем использовать алгоритм шифрования в режиме счетчика
  *  (согласно криптонаборам btls)
  */
-EVP_CIPHER belt_stream = 
+EVP_CIPHER belt_stream =
 {
 	NID_undef,
 	1, /*block_size*/
 	BELT_KEY_SIZE, /*key_size*/
 	BELT_IV_SIZE, /*iv_len */
-	EVP_CIPH_VARIABLE_LENGTH | EVP_CIPH_CUSTOM_IV | EVP_CIPH_RAND_KEY | 
+	EVP_CIPH_VARIABLE_LENGTH | EVP_CIPH_CUSTOM_IV | EVP_CIPH_RAND_KEY |
 	EVP_CIPH_ALWAYS_CALL_INIT , /* Various flags */
 	belt_ctr_init, /* init key */
 	belt_ctr_cipher, /* encrypt/decrypt data */
 	belt_ctr_cleanup, /* cleanup ctx */
-	0, /* ctx_size (will be initialize in bind function) */ 
+	0, /* ctx_size (will be initialize in bind function) */
 	NULL, /* set asn1 params */
 	NULL, /* get asn1 params */
 	belt_cipher_control, /* control function */
@@ -44,18 +44,18 @@ EVP_CIPHER belt_stream =
 };
 
 /* Определение структуры для блочного алгоритма в режиме счетчика */
-EVP_CIPHER belt_ctr = 
+EVP_CIPHER belt_ctr =
 {
 	NID_undef,
 	1, /*block_size*/
 	BELT_KEY_SIZE, /*key_size*/
 	BELT_IV_SIZE, /*iv_len */
-	EVP_CIPH_CTR_MODE | EVP_CIPH_CUSTOM_IV | EVP_CIPH_RAND_KEY | 
+	EVP_CIPH_CTR_MODE | EVP_CIPH_CUSTOM_IV | EVP_CIPH_RAND_KEY |
 	EVP_CIPH_ALWAYS_CALL_INIT | EVP_CIPH_NO_PADDING, /* Various flags */
 	belt_ctr_init, /* init key */
 	belt_ctr_cipher, /* encrypt/decrypt data */
 	belt_ctr_cleanup, /* cleanup ctx */
-	0, /* ctx_size (will be initialize in bind function) */ 
+	0, /* ctx_size (will be initialize in bind function) */
 	NULL, /* set asn1 params */
 	NULL, /* get asn1 params */
 	belt_cipher_control, /* control function */
@@ -67,18 +67,18 @@ static int belt_cfb_init(EVP_CIPHER_CTX *ctx, const unsigned char *key, const un
 static int belt_cfb_cipher(EVP_CIPHER_CTX *ctx, unsigned char *out, const unsigned char *in, unsigned int inl);
 static int belt_cfb_cleanup(EVP_CIPHER_CTX *ctx);
 
-EVP_CIPHER belt_cfb = 
+EVP_CIPHER belt_cfb =
 {
 	NID_undef,
 	1, /*block_size*/
 	BELT_KEY_SIZE, /*key_size*/
 	BELT_IV_SIZE, /*iv_len */
-	EVP_CIPH_CFB_MODE | EVP_CIPH_CUSTOM_IV | EVP_CIPH_RAND_KEY | 
+	EVP_CIPH_CFB_MODE | EVP_CIPH_CUSTOM_IV | EVP_CIPH_RAND_KEY |
 	EVP_CIPH_ALWAYS_CALL_INIT | EVP_CIPH_NO_PADDING, /* Various flags */
 	belt_cfb_init, /* init key */
 	belt_cfb_cipher, /* encrypt/decrypt data */
 	belt_cfb_cleanup, /* cleanup ctx */
-	0, /* ctx_size (will be initialize in bind function) */ 
+	0, /* ctx_size (will be initialize in bind function) */
 	NULL, /* set asn1 params */
 	NULL, /* get asn1 params */
 	belt_cipher_control, /* control function */
@@ -91,19 +91,19 @@ static int belt_dwp_cipher(EVP_CIPHER_CTX *ctx, unsigned char *out, const unsign
 static int belt_dwp_cleanup(EVP_CIPHER_CTX *ctx);
 static int belt_dwp_control(EVP_CIPHER_CTX *c, int type, int arg, void *ptr);
 
-/* режим одновременного шифрования и имитозащиты данных будем определять как GCM */	
-EVP_CIPHER belt_dwp = 
+/* режим одновременного шифрования и имитозащиты данных будем определять как GCM */
+EVP_CIPHER belt_dwp =
 {
 	NID_undef,
 	1, /*block_size*/
 	BELT_KEY_SIZE, /*key_size*/
 	BELT_IV_SIZE, /*iv_len */
-	EVP_CIPH_GCM_MODE | EVP_CIPH_FLAG_AEAD_CIPHER | EVP_CIPH_CUSTOM_IV | 
+	EVP_CIPH_GCM_MODE | EVP_CIPH_FLAG_AEAD_CIPHER | EVP_CIPH_CUSTOM_IV |
 		 EVP_CIPH_RAND_KEY | EVP_CIPH_ALWAYS_CALL_INIT | EVP_CIPH_NO_PADDING, /* Various flags */
 	belt_dwp_init, /* init key */
 	belt_dwp_cipher, /* encrypt/decrypt data */
 	belt_dwp_cleanup, /* cleanup ctx */
-	0, /* ctx_size (will be initialize in bind function) */ 
+	0, /* ctx_size (will be initialize in bind function) */
 	NULL, /* set asn1 params */
 	NULL, /* get asn1 params */
 	belt_dwp_control, /* control function */
@@ -111,11 +111,11 @@ EVP_CIPHER belt_dwp =
 };
 
 /* Implementation of belt-ctr */
-static int belt_ctr_init(EVP_CIPHER_CTX *ctx, const unsigned char *key, const unsigned char *iv, int enc) 
+static int belt_ctr_init(EVP_CIPHER_CTX *ctx, const unsigned char *key, const unsigned char *iv, int enc)
 {
 	if (ctx->app_data == NULL)
 		ctx->app_data = ctx->cipher_data;
-	
+
 	if (iv) memcpy(ctx->oiv, iv, EVP_CIPHER_CTX_iv_length(ctx));
 	memcpy(ctx->iv, ctx->oiv, EVP_CIPHER_CTX_iv_length(ctx));
 
@@ -125,21 +125,21 @@ static int belt_ctr_init(EVP_CIPHER_CTX *ctx, const unsigned char *key, const un
 	return 1;
 }
 
-static int belt_ctr_cipher(EVP_CIPHER_CTX *ctx, unsigned char *out, const unsigned char *in, unsigned int inl) 
+static int belt_ctr_cipher(EVP_CIPHER_CTX *ctx, unsigned char *out, const unsigned char *in, unsigned int inl)
 {
 	memCopy(out, in, inl);
-	if (ctx->encrypt) 
+	if (ctx->encrypt)
 	{
 		beltCTRStepE(out, inl, ctx->cipher_data);
-	} 
-	else 
+	}
+	else
 	{
 		beltCTRStepD(out, inl, ctx->cipher_data);
 	}
 	return 1;
 }
 
-static int belt_ctr_cleanup(EVP_CIPHER_CTX *ctx) 
+static int belt_ctr_cleanup(EVP_CIPHER_CTX *ctx)
 {
 	memSetZero(ctx->cipher_data, beltCTR_keep());
 	ctx->app_data = NULL;
@@ -161,15 +161,15 @@ int belt_cipher_control(EVP_CIPHER_CTX *ctx, int type, int arg, void *ptr)
  *  при "полном" встраивании ...
  *
  * case EVP_CTRL_PBE_PRF_NID:
- *		if (ptr) 
+ *		if (ptr)
  *			*((int *)ptr)=  NID_id_HMACGostR3411_94;
- *		else 
+ *		else
  *		{
  *			ERR_BTLS(BTLS_F_BELT_CTR_CONTROL, BTLS_R_NO_PARAMETERS_SET);
  *			return 0;
  *			}
  *		break;
- */				
+ */
 	default:
 		ERR_BTLS(BTLS_F_BELT_CIPHER_CONTROL, BTLS_R_UNSUPPORTED_CIPHER_CTL_COMMAND);
 		return -1;
@@ -179,11 +179,11 @@ int belt_cipher_control(EVP_CIPHER_CTX *ctx, int type, int arg, void *ptr)
 
 
 /* Implementation of belt-cfb */
-static int belt_cfb_init(EVP_CIPHER_CTX *ctx, const unsigned char *key, const unsigned char *iv, int enc) 
+static int belt_cfb_init(EVP_CIPHER_CTX *ctx, const unsigned char *key, const unsigned char *iv, int enc)
 {
 	if (ctx->app_data == NULL)
 		ctx->app_data = ctx->cipher_data;
-	
+
 	if (iv) memcpy(ctx->oiv, iv, EVP_CIPHER_CTX_iv_length(ctx));
 	memcpy(ctx->iv, ctx->oiv, EVP_CIPHER_CTX_iv_length(ctx));
 
@@ -193,21 +193,21 @@ static int belt_cfb_init(EVP_CIPHER_CTX *ctx, const unsigned char *key, const un
 	return 1;
 }
 
-static int belt_cfb_cipher(EVP_CIPHER_CTX *ctx, unsigned char *out, const unsigned char *in, unsigned int inl) 
+static int belt_cfb_cipher(EVP_CIPHER_CTX *ctx, unsigned char *out, const unsigned char *in, unsigned int inl)
 {
 	memCopy(out, in, inl);
-	if (ctx->encrypt) 
+	if (ctx->encrypt)
 	{
 		beltCFBStepE(out, inl, ctx->cipher_data);
-	} 
-	else 
+	}
+	else
 	{
 		beltCFBStepD(out, inl, ctx->cipher_data);
 	}
 	return 1;
 }
 
-static int belt_cfb_cleanup(EVP_CIPHER_CTX *ctx) 
+static int belt_cfb_cleanup(EVP_CIPHER_CTX *ctx)
 {
 	memSetZero(ctx->cipher_data, beltCFB_keep());
 	ctx->app_data = NULL;
@@ -217,11 +217,11 @@ static int belt_cfb_cleanup(EVP_CIPHER_CTX *ctx)
 
 /* Implementation of belt-dwp mode */
 
-static int belt_dwp_init(EVP_CIPHER_CTX *ctx, const unsigned char *key, const unsigned char *iv, int enc) 
+static int belt_dwp_init(EVP_CIPHER_CTX *ctx, const unsigned char *key, const unsigned char *iv, int enc)
 {
 	if (ctx->app_data == NULL)
 		ctx->app_data = ctx->cipher_data;
-	
+
 	if (iv) memcpy(ctx->oiv, iv, EVP_CIPHER_CTX_iv_length(ctx));
 	memcpy(ctx->iv, ctx->oiv, EVP_CIPHER_CTX_iv_length(ctx));
 
@@ -231,7 +231,7 @@ static int belt_dwp_init(EVP_CIPHER_CTX *ctx, const unsigned char *key, const un
 	return 1;
 }
 
-static int belt_dwp_cipher(EVP_CIPHER_CTX *ctx, unsigned char *out, const unsigned char *in, unsigned int inl) 
+static int belt_dwp_cipher(EVP_CIPHER_CTX *ctx, unsigned char *out, const unsigned char *in, unsigned int inl)
 {
 	unsigned char mac[BELT_MAC_SIZE];
 
@@ -243,7 +243,7 @@ static int belt_dwp_cipher(EVP_CIPHER_CTX *ctx, unsigned char *out, const unsign
 		}
 		else
 		{ /* обработка критических данных */
-			if (ctx->encrypt) 
+			if (ctx->encrypt)
 			{ /* зашифрование */
 				memCopy(out, in, inl);
 				beltDWPStepE(out, inl, ctx->cipher_data); /* зашифрование */
@@ -270,11 +270,11 @@ static int belt_dwp_cipher(EVP_CIPHER_CTX *ctx, unsigned char *out, const unsign
 		{ /* режим зашифрования */
 			beltDWPStepG(ctx->buf, ctx->cipher_data);
 		}
-		return 0; 
+		return 0;
 	}
 }
 
-static int belt_dwp_cleanup(EVP_CIPHER_CTX *ctx) 
+static int belt_dwp_cleanup(EVP_CIPHER_CTX *ctx)
 {
 	memSetZero(ctx->cipher_data, beltDWP_keep());
 	ctx->app_data = NULL;
@@ -314,18 +314,18 @@ static int belt_dwp_control(EVP_CIPHER_CTX *c, int type, int arg, void *ptr)
  *  при "полном" встраивании ...
  *
 *	case EVP_CTRL_PBE_PRF_NID:
- *		if (ptr) 
+ *		if (ptr)
  *			*((int *)ptr)=  NID_id_HMACGostR3411_94;
- *		else 
+ *		else
  *		{
  *			ERR_BTLS(BTLS_F_BELT_CTR_CONTROL, BTLS_R_NO_PARAMETERS_SET);
  *			return 0;
  *			}
  *		break;
- *		
+ *
  *	case EVP_CTRL_AEAD_SET_MAC_KEY:
  *  ...
- *	case case EVP_CTRL_AEAD_TLS1_AAD:	
+ *	case case EVP_CTRL_AEAD_TLS1_AAD:
  *  ...
  */
 	default:

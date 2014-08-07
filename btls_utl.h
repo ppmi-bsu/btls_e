@@ -1,7 +1,7 @@
 ﻿/*!
 *******************************************************************************
 \file btls_utl.h
-\brief Определения для встраиваемого модуля btls 
+\brief Определения для встраиваемого модуля btls
 *//****************************************************************************
 \author (С) Олег Соловей, http://apmi.bsu.by
 \created 2013.05.14
@@ -16,8 +16,8 @@
 #include <openssl/objects.h>
 #include <openssl/engine.h>
 #include <openssl/evp.h>
-#include <asn1/asn1_locl.h>
-#include <x509v3/x509v3.h>
+//#include <asn1/asn1_locl.h>
+#include <openssl/x509v3.h>
 
 extern int belt_stream_nid;
 extern int belt_ctr_nid;

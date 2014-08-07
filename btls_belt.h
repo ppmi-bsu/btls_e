@@ -17,10 +17,10 @@
 #include <openssl/evp.h>
 #include <openssl/ossl_typ.h>
 
-#include "../bee2/crypto/belt.h"
-#include "../bee2/crypto/brng.h"
-#include "../bee2/defs.h"
-#include "../bee2/core/err.h"
+#include "crypto/belt.h"
+#include "crypto/brng.h"
+#include "defs.h"
+#include "core/err.h"
 
 #include "btls_mem.h"
 
@@ -30,10 +30,10 @@
 #define BELT_MAC_SIZE	8
 
 /* Ctrls to set belt-mac key */
-#define EVP_MD_CTRL_KEY_LEN (EVP_MD_CTRL_ALG_CTRL+3) 
-#define EVP_MD_CTRL_SET_KEY (EVP_MD_CTRL_ALG_CTRL+4) 
+#define EVP_MD_CTRL_KEY_LEN (EVP_MD_CTRL_ALG_CTRL+3)
+#define EVP_MD_CTRL_SET_KEY (EVP_MD_CTRL_ALG_CTRL+4)
 
-struct belt_mac_pmeth_data 
+struct belt_mac_pmeth_data
 {
 	int key_set;
 	EVP_MD *md;

@@ -15,11 +15,11 @@
 #include <openssl/objects.h>
 #include "bee2evp_err.h"
 #include "btls_bign.h"
-#include "../bee2/core/mem.h"
+#include "core/mem.h"
 
 /*
 *******************************************************************************
-����������� ��������� ��������� �������� ASN.1, ��������� 
+����������� ��������� ��������� �������� ASN.1, ���������
 � ��� 34.101.45 [���������� �]:
 
   AlgorithmIdentifier ::= SEQUENCE {
@@ -45,7 +45,7 @@
   FieldID ::= SEQUENCE {
     fieldType   OBJECT IDENTIFIER (bign-primefield),
     parameters  INTEGER
-  } 
+  }
 
   Curve ::= SEQUENCE {
     a     OCTET STRING (SIZE(32|48|64)),
@@ -66,7 +66,7 @@
   PrivateKey ::= SEQUENCE {
     privateKey  OCTET STRING (SIZE(32|48|64)),
     parameters  DomainParameters OPTIONAL,
-    publicKey   BIT STRING (SIZE(512|768|1024)) OPTIONAL 
+    publicKey   BIT STRING (SIZE(512|768|1024)) OPTIONAL
   }
 
 *******************************************************************************
@@ -105,7 +105,7 @@ typedef struct
 	} value;
 } BIGN_DOMAINPARAMS;
 
-typedef struct 
+typedef struct
 {
 	long version;
 	ASN1_OCTET_STRING* privateKey;
@@ -113,34 +113,34 @@ typedef struct
 	ASN1_BIT_STRING* publicKey;
 } BIGN_PRIVATEKEY;
 
-ASN1_SEQUENCE(BIGN_FIELDID) = 
+ASN1_SEQUENCE(BIGN_FIELDID) =
 {
 	ASN1_SIMPLE(BIGN_FIELDID, fieldType, ASN1_OBJECT),
 	ASN1_SIMPLE(BIGN_FIELDID, prime, ASN1_INTEGER)
-} 
+}
 ASN1_SEQUENCE_END(BIGN_FIELDID)
 
-ASN1_SEQUENCE(BIGN_CURVE) = 
+ASN1_SEQUENCE(BIGN_CURVE) =
 {
 	ASN1_SIMPLE(BIGN_CURVE, a, ASN1_OCTET_STRING),
 	ASN1_SIMPLE(BIGN_CURVE, b, ASN1_OCTET_STRING),
 	ASN1_OPT(BIGN_CURVE, seed, ASN1_BIT_STRING)
 } ASN1_SEQUENCE_END(BIGN_CURVE)
 
-ASN1_SEQUENCE(BIGN_ECPARAMS) = 
+ASN1_SEQUENCE(BIGN_ECPARAMS) =
 {
 	ASN1_SIMPLE(BIGN_ECPARAMS, version, LONG),
 	ASN1_SIMPLE(BIGN_ECPARAMS, fieldID, BIGN_FIELDID),
 	ASN1_SIMPLE(BIGN_ECPARAMS, curve, BIGN_CURVE),
 	ASN1_SIMPLE(BIGN_ECPARAMS, base, ASN1_OCTET_STRING),
 	ASN1_SIMPLE(BIGN_ECPARAMS, order, ASN1_INTEGER),
-	ASN1_OPT(BIGN_ECPARAMS, cofactor, ASN1_INTEGER) 
+	ASN1_OPT(BIGN_ECPARAMS, cofactor, ASN1_INTEGER)
 } ASN1_SEQUENCE_END(BIGN_ECPARAMS)
 
 DECLARE_ASN1_ALLOC_FUNCTIONS(BIGN_ECPARAMS)
 IMPLEMENT_ASN1_ALLOC_FUNCTIONS(BIGN_ECPARAMS)
 
-ASN1_CHOICE(BIGN_DOMAINPARAMS) = 
+ASN1_CHOICE(BIGN_DOMAINPARAMS) =
 {
 	ASN1_SIMPLE(BIGN_DOMAINPARAMS, value.named, ASN1_OBJECT),
 	ASN1_SIMPLE(BIGN_DOMAINPARAMS, value.specified, BIGN_ECPARAMS),
@@ -166,15 +166,15 @@ IMPLEMENT_ASN1_FUNCTIONS_const(BIGN_PRIVATEKEY)
 *******************************************************************************
 ���������� ������ bee2/bign
 
-\pre ��������� ������� bign_cmp_params() ���������. ������� ����� ���������� 
+\pre ��������� ������� bign_cmp_params() ���������. ������� ����� ����������
 ������ ������ (p, a, b) [��� ��������� ���� ������������ �� ���� ������].
 *******************************************************************************
 */
 
-static int bign_cmp_params(const bign_params* params1, 
+static int bign_cmp_params(const bign_params* params1,
 	const bign_params* params2)
 {
-	return (params1 && params2 && 
+	return (params1 && params2 &&
 		params1->l <= 256 && params1->l == params2->l &&
 		memCmp(params1->p, params2->p, params1->l / 4) == 0 &&
 		memCmp(params1->a, params2->a, params1->l / 4) == 0 &&
@@ -225,7 +225,7 @@ int bign_params_by_name(bign_params* params, int nid)
 *******************************************************************************
 */
 
-static int bign_asn1_params2fieldid(BIGN_FIELDID* field, 
+static int bign_asn1_params2fieldid(BIGN_FIELDID* field,
 	const bign_params* params)
 {
 	int ok = 0;
@@ -303,7 +303,7 @@ static int bign_asn1_params2curve(BIGN_CURVE* curve, const bign_params* params)
 	return 1;
 }
 
-static BIGN_ECPARAMS* bign_asn1_params2ecp(BIGN_ECPARAMS* ecp, 
+static BIGN_ECPARAMS* bign_asn1_params2ecp(BIGN_ECPARAMS* ecp,
 	const bign_params* params)
 {
 	int	ok = 0;
@@ -336,7 +336,7 @@ static BIGN_ECPARAMS* bign_asn1_params2ecp(BIGN_ECPARAMS* ecp,
 		BEE2EVPerr(BEE2EVP_F_BIGN_ASN1_PARAMS2ECP, ERR_R_EC_LIB);
 		goto err;
 	}
-	
+
 	// ���������� ������� �����
 	if (!M_ASN1_OCTET_STRING_set(ret->base, params->yG, params->l / 4))
 	{
@@ -365,7 +365,7 @@ static BIGN_ECPARAMS* bign_asn1_params2ecp(BIGN_ECPARAMS* ecp,
 	//}
 	ok = 1;
 
-err:	
+err:
 	if (!ok)
 	{
 		if (ret && !ecp)
@@ -377,7 +377,7 @@ err:
 	return ret;
 }
 
-BIGN_DOMAINPARAMS* bign_asn1_params2dp(BIGN_DOMAINPARAMS* dp, 
+BIGN_DOMAINPARAMS* bign_asn1_params2dp(BIGN_DOMAINPARAMS* dp,
 	const bign_params* params)
 {
 	int ok = 1, nid;
@@ -410,7 +410,7 @@ BIGN_DOMAINPARAMS* bign_asn1_params2dp(BIGN_DOMAINPARAMS* dp,
 	}
 	// ����� ���������
 	else
-	{	
+	{
 		ret->type = 1;
 		if (!(ret->value.specified = bign_asn1_params2ecp(NULL, params)))
 			ok = 0;
@@ -441,8 +441,8 @@ static int bign_asn1_ecp2params(bign_params* params, const BIGN_ECPARAMS* ecp)
 	}
 	memSetZero(params, sizeof(bign_params));
 	// ��������� �������� ���� GF(p)
-	if (!ecp->fieldID || 
-		!ecp->fieldID->fieldType || 
+	if (!ecp->fieldID ||
+		!ecp->fieldID->fieldType ||
 		OBJ_obj2nid(ecp->fieldID->fieldType) != id_bign_primefield ||
 		!ecp->fieldID->prime)
 	{
@@ -456,10 +456,10 @@ static int bign_asn1_ecp2params(bign_params* params, const BIGN_ECPARAMS* ecp)
 		goto err;
 	}
 	if (BN_is_negative(p) || BN_is_zero(p) ||
-		(params->l = (size_t)BN_num_bits(p)) != 256 && 
+		(params->l = (size_t)BN_num_bits(p)) != 256 &&
 			params->l != 384 && params->l != 512)
 	{
-		BEE2EVPerr(BEE2EVP_F_BIGN_ASN1_PARAMETERS2GROUP, 
+		BEE2EVPerr(BEE2EVP_F_BIGN_ASN1_PARAMETERS2GROUP,
 			BEE2EVP_R_INVALID_FIELD);
 		goto err;
 	}
@@ -472,8 +472,8 @@ static int bign_asn1_ecp2params(bign_params* params, const BIGN_ECPARAMS* ecp)
 	}
 	memRev(params->p, params->l / 4);
 	// ��������� a � b
-	if (!ecp->curve || 
-		!ecp->curve->a || !ecp->curve->a->data || 
+	if (!ecp->curve ||
+		!ecp->curve->a || !ecp->curve->a->data ||
 		!ecp->curve->b || !ecp->curve->b->data ||
 		ecp->curve->a->length != params->l / 4 ||
 		ecp->curve->b->length != params->l / 4)
@@ -506,10 +506,10 @@ static int bign_asn1_ecp2params(bign_params* params, const BIGN_ECPARAMS* ecp)
 		BEE2EVPerr(BEE2EVP_F_BIGN_ASN1_ECP2PARAMS, ERR_R_ASN1_LIB);
 		goto err;
 	}
-	if (BN_is_negative(p) || BN_is_zero(p) || 
+	if (BN_is_negative(p) || BN_is_zero(p) ||
 		BN_num_bits(p) != (int)params->l * 2)
 	{
-		BEE2EVPerr(BEE2EVP_F_BIGN_ASN1_ECP2PARAMS, 
+		BEE2EVPerr(BEE2EVP_F_BIGN_ASN1_ECP2PARAMS,
 			BEE2EVP_R_INVALID_GROUP_ORDER);
 		goto err;
 	}
@@ -536,7 +536,7 @@ err:
 	return ok;
 }
 
-static int bign_asn1_dp2params(bign_params* params, 
+static int bign_asn1_dp2params(bign_params* params,
 	const BIGN_DOMAINPARAMS* dp)
 {
 	// ������� ��������
@@ -547,17 +547,17 @@ static int bign_asn1_dp2params(bign_params* params,
 	}
 	// ����������� ���������?
 	if (dp->type == 0)
-	{ 
+	{
 		if (!bign_params_by_name(params, OBJ_obj2nid(dp->value.named)))
 		{
-			BEE2EVPerr(BEE2EVP_F_BIGN_ASN1_DP2PARAMS, 
+			BEE2EVPerr(BEE2EVP_F_BIGN_ASN1_DP2PARAMS,
 				BEE2EVP_R_PARAMS_NEW_BY_NAME_FAILURE);
 			return 0;
 		}
 	}
 	// ����� ���������?
 	else if (dp->type == 1)
-	{ 
+	{
 		if (!bign_asn1_ecp2params(params, dp->value.specified))
 		{
 			BEE2EVPerr(BEE2EVP_F_BIGN_ASN1_PKPARAMETERS2GROUP, ERR_R_EC_LIB);
@@ -566,13 +566,13 @@ static int bign_asn1_dp2params(bign_params* params,
 	}
 	// ������������� ���������?
 	else if (dp->type == 2)
-	{ 
+	{
 		return 0;
 	}
 	// �������� ���������?
 	else
 	{
-		BEE2EVPerr(BEE2EVP_F_BIGN_ASN1_PKPARAMETERS2GROUP, 
+		BEE2EVPerr(BEE2EVP_F_BIGN_ASN1_PKPARAMETERS2GROUP,
 			BEE2EVP_R_ASN1_ERROR);
 		return 0;
 	}
@@ -598,7 +598,7 @@ int bign_d2i_params(bign_key* key, const unsigned char** in, long len)
 	// ������������ � dp
 	if (!(dp = d2i_BIGN_DOMAINPARAMS(NULL, in, len)))
 	{
-		BEE2EVPerr(BEE2EVP_F_BIGN_D2I_DOMAINPARAMS, 
+		BEE2EVPerr(BEE2EVP_F_BIGN_D2I_DOMAINPARAMS,
 			BEE2EVP_R_D2I_PARAMS_FAILURE);
 		BIGN_DOMAINPARAMS_free(dp);
 		return 0;
@@ -606,10 +606,10 @@ int bign_d2i_params(bign_key* key, const unsigned char** in, long len)
 	// ��������� dp
 	if (!bign_asn1_dp2params(&key->params, dp))
 	{
-		BEE2EVPerr(BEE2EVP_F_BIGN_D2I_DOMAINPARAMS, 
+		BEE2EVPerr(BEE2EVP_F_BIGN_D2I_DOMAINPARAMS,
 			BEE2EVP_R_DP2PARAMS_FAILURE);
 		BIGN_DOMAINPARAMS_free(dp);
-		return 0; 
+		return 0;
 	}
 	BIGN_DOMAINPARAMS_free(dp);
 	return 1;
@@ -622,24 +622,24 @@ int bign_i2d_params(unsigned char** out, const bign_key* key)
 	// ������� ��������
 	if (!key)
 	{
-		BEE2EVPerr(BEE2EVP_F_BIGN_I2D_DOMAINPARAMS, 
+		BEE2EVPerr(BEE2EVP_F_BIGN_I2D_DOMAINPARAMS,
 			ERR_R_PASSED_NULL_PARAMETER);
 		return 0;
 	}
 	// ������������� � ����������� ���������
 	if (!(dp = bign_asn1_params2dp(NULL, &key->params)))
 	{
-		BEE2EVPerr(BEE2EVP_F_BIGN_I2D_DOMAINPARAMS, 
+		BEE2EVPerr(BEE2EVP_F_BIGN_I2D_DOMAINPARAMS,
 			BEE2EVP_R_PARAMS2DP_FAILURE);
 		return 0;
 	}
 	if (!(ret = i2d_BIGN_DOMAINPARAMS(dp, out)))
 	{
-		BEE2EVPerr(BEE2EVP_F_BIGN_I2D_DOMAINPARAMS, 
+		BEE2EVPerr(BEE2EVP_F_BIGN_I2D_DOMAINPARAMS,
 			BEE2EVP_R_I2D_PARAMS_FAILURE);
 		BIGN_DOMAINPARAMS_free(dp);
 		return 0;
-	}	
+	}
 	BIGN_DOMAINPARAMS_free(dp);
 	return ret;
 }
