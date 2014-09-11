@@ -31,7 +31,7 @@ EVP_CIPHER belt_stream =
 	1, /*block_size*/
 	BELT_KEY_SIZE, /*key_size*/
 	BELT_IV_SIZE, /*iv_len */
-	EVP_CIPH_VARIABLE_LENGTH | EVP_CIPH_CUSTOM_IV | EVP_CIPH_RAND_KEY | 
+	EVP_CIPH_VARIABLE_LENGTH | EVP_CIPH_CUSTOM_IV | EVP_CIPH_RAND_KEY | EVP_CIPH_FLAG_DEFAULT_ASN1 |
 	EVP_CIPH_ALWAYS_CALL_INIT , /* Various flags */
 	belt_ctr_init, /* init key */
 	belt_ctr_cipher, /* encrypt/decrypt data */
@@ -50,7 +50,7 @@ EVP_CIPHER belt_ctr =
 	1, /*block_size*/
 	BELT_KEY_SIZE, /*key_size*/
 	BELT_IV_SIZE, /*iv_len */
-	EVP_CIPH_CTR_MODE | EVP_CIPH_CUSTOM_IV | EVP_CIPH_RAND_KEY | 
+	EVP_CIPH_CTR_MODE | EVP_CIPH_CUSTOM_IV | EVP_CIPH_RAND_KEY | EVP_CIPH_FLAG_DEFAULT_ASN1 |
 	EVP_CIPH_ALWAYS_CALL_INIT | EVP_CIPH_NO_PADDING, /* Various flags */
 	belt_ctr_init, /* init key */
 	belt_ctr_cipher, /* encrypt/decrypt data */
@@ -73,7 +73,7 @@ EVP_CIPHER belt_cfb =
 	1, /*block_size*/
 	BELT_KEY_SIZE, /*key_size*/
 	BELT_IV_SIZE, /*iv_len */
-	EVP_CIPH_CFB_MODE | EVP_CIPH_CUSTOM_IV | EVP_CIPH_RAND_KEY | 
+	EVP_CIPH_CFB_MODE | EVP_CIPH_CUSTOM_IV | EVP_CIPH_RAND_KEY | EVP_CIPH_FLAG_DEFAULT_ASN1 |
 	EVP_CIPH_ALWAYS_CALL_INIT | EVP_CIPH_NO_PADDING, /* Various flags */
 	belt_cfb_init, /* init key */
 	belt_cfb_cipher, /* encrypt/decrypt data */
@@ -98,7 +98,7 @@ EVP_CIPHER belt_dwp =
 	1, /*block_size*/
 	BELT_KEY_SIZE, /*key_size*/
 	BELT_IV_SIZE, /*iv_len */
-	EVP_CIPH_GCM_MODE | EVP_CIPH_FLAG_AEAD_CIPHER | EVP_CIPH_CUSTOM_IV | 
+	EVP_CIPH_GCM_MODE | EVP_CIPH_FLAG_AEAD_CIPHER | EVP_CIPH_CUSTOM_IV | EVP_CIPH_FLAG_DEFAULT_ASN1 |
 		 EVP_CIPH_RAND_KEY | EVP_CIPH_ALWAYS_CALL_INIT | EVP_CIPH_NO_PADDING, /* Various flags */
 	belt_dwp_init, /* init key */
 	belt_dwp_cipher, /* encrypt/decrypt data */
